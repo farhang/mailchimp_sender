@@ -1,0 +1,48 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Contains necessary hook implementations, callbacks & helpers.
+ */
+
+/**
+ * Implements hook_perm().
+ */
+function mailchimp_sender_perm() {
+  return array('administer mailchimp sender');
+}
+
+/**
+ * Implements hook_menu().
+ */
+function mailchimp_sender_menu() {
+  $items = array();
+  // list of users form mailchimp sevice.
+  $items['admin/build/mailchimp_sender'] = array(
+    'title' => 'Mailchimp sender',
+    'description' => 'list of mailchimp users',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mailchimp_sender_form_list'),
+    'access arguments' => array('administer mailchimp sender'),
+//    'file' => 'inbound_checker.inc',
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 1,
+  );
+}
+
+function _my_test_func() {
+  echo "hello world";
+}
+
+function mailchimp_sender_form_list($form_state, $ic = NULL) {
+  $form['mailchimp_sender_site_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Website name'),
+    '#description' => t('Name of the external website you wish to check.'),
+    '#default_value' => isset($ic->site_name) ? $ic->site_name : '',
+    '#required' => TRUE,
+  );
+  return $form;
+}
+

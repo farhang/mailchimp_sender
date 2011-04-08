@@ -1,0 +1,6 @@
+; $Id$
+name = "Mailchimp Sender"
+description = "A module for sending emailes throw mailchimp service"
+core = 6.x
+package = Mail
+
