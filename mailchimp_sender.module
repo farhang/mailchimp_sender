@@ -22,17 +22,54 @@ function mailchimp_sender_menu() {
   $items['admin/build/mailchimp_sender'] = array(
     'title' => 'Mailchimp sender',
     'description' => 'list of mailchimp users',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('mailchimp_sender_form_list'),
+    'page callback' => '_my_test_func',
+//    'page arguments' => array('mailchimp_sender_form_list'),
     'access arguments' => array('administer mailchimp sender'),
-//    'file' => 'inbound_checker.inc',
+    'file' => 'MCAPI.class.inc',
     'type' => MENU_NORMAL_ITEM,
     'weight' => 1,
   );
+
+  return $items;
 }
 
 function _my_test_func() {
-  echo "hello world";
+    //API Key - see http://admin.mailchimp.com/account/api
+    $apikey = 'f26fed3956736322a5bfb4db96558441-us2';
+
+    // A List Id to run examples against. use lists() to view all
+    // Also, login to MC account, go to List, then List Tools, and look for the List ID entry
+    $listId = 'YOUR MAILCHIMP LIST ID - see lists() method';
+
+    // A Campaign Id to run examples against. use campaigns() to view all
+    $campaignId = 'YOUR MAILCHIMP CAMPAIGN ID - see campaigns() method';
+
+    //some email addresses used in the examples:
+    $my_email = 'INVALID@example.org';
+    $boss_man_email = 'INVALID@example.com';
+
+    //just used in xml-rpc examples
+
+   $api = new MCAPI($apikey);
+
+  $retval = $api->lists();
+
+  if ($api->errorCode){
+	  echo "Unable to load lists()!";
+	  echo "\n\tCode=".$api->errorCode;
+	  echo "\n\tMsg=".$api->errorMessage."\n";
+  } else {
+	  echo "Lists that matched:".$retval['total']."\n";
+	  echo "Lists returned:".sizeof($retval['data'])."\n";
+	  foreach ($retval['data'] as $list){
+		  echo "Id = ".$list['id']." - ".$list['name']."\n";
+		  echo "Web_id = ".$list['web_id']."\n";
+		  echo "\tSub = ".$list['stats']['member_count'];
+		  echo "\tUnsub=".$list['stats']['unsubscribe_count'];
+		  echo "\tCleaned=".$list['stats']['cleaned_count']."\n";
+	  }
+  }
+
 }
 
 function mailchimp_sender_form_list($form_state, $ic = NULL) {
